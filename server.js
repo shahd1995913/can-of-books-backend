@@ -82,7 +82,7 @@ server.get('/', homeHandler)
 
 function homeHandler(req,res){
 
-  res.send('Home Page');
+  res.send('Welcome to the Home Page-- shahed say Welcome visiter  (:');
 }
 
 
