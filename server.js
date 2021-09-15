@@ -1,30 +1,37 @@
 'use strict';
 
-
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
+
+
+const server = express();
+server.use(cors());
+
+
 const PORT = process.env.PORT || 3001;
+
+//  To acess the data if the rsult undifend i must to add the below code 
+server.use(express.json());
 
 // use MongoDS
 // getting-started.js
 const mongoose = require('mongoose');
 let modelBook;
-
-
-
 main().catch(err => console.log(err));
 
 async function main() {
-  await mongoose.connect('mongodb://localhost:27017/Book');
+
+  // update 1
+  await mongoose.connect( 'mongodb://localhost:27017/Book');
 
   const BookSchema = new mongoose.Schema({
     // name: String
     // the basic structure for object
     BookName: String,
     Status: String,
-    ownerEmail: String,
+    email: String,
     Description: String
 
   });
@@ -37,7 +44,7 @@ async function main() {
   modelBook = mongoose.model('Book', BookSchema);
   // seeding data  inital data 
   // data i want to insert 
-   BookInfo();
+//   BookInfo();
 
 }
 
@@ -48,19 +55,19 @@ async function BookInfo() {
   const book1 = new modelBook({
     BookName: 'Art',
     Status: 'open',
-    ownerEmail: 'shahdalkhatib95@gmail.com',
+    email: 'shahdalkhatib95@gmail.com',
     Description:'Book about the art in The past'
   });
   const book2 = new modelBook({
     BookName: 'Math',
     Status: 'closed',
-    ownerEmail: 'shahdalkhatib95@gmail.com',
+    email: 'shahdalkhatib95@gmail.com',
     Description:'Book about the Math opreation'
   });
   const book3 = new modelBook({
     BookName: 'Arabic',
     Status: 'open',
-    ownerEmail: 'shahdalkhatib95@gmail.com',
+    email: 'shahdalkhatib95@gmail.com',
     Description:'Book about the Arabic Languge and grammers'
   });
   // we use save method to save data 
@@ -71,30 +78,34 @@ async function BookInfo() {
 }
 
 
-const server = express();
-server.use(cors());
+
 
 
 
 //Routs
 
 server.get('/', homeHandler)
+server.get('/getBook',getBookHandler)
+// Deal with POST 
+// use POST  i must to use it in front end and the back end also
+server.post('/addBook',addBookHandler);
+server.delete('/deleteBook/:id',deleteBookHandler);
+
+
+
+
 
 function homeHandler(req,res){
 
   res.send('Welcome to the Home Page-- shahed say Welcome visiter  (:');
 }
 
-
-server.get('/getBook',getBookHandler)
-
-
 function getBookHandler(r,resp){
 
 // send fav cat list {email}
 // i need get the email
-const email= r.query.ownerEmail;
-modelBook.find({ownerOfemail:email},(err,result)=>{
+const email= r.query.email;
+modelBook.find({email:email},(err,result)=>{
 if(err){
 
   console.log(err);
@@ -112,13 +123,10 @@ resp.send(result);
 
 }
 
-// Deal with POST 
-// use POST  i must to use it in front end and the back end also
-server.post('addBook',addBookHandler);
-//  To acess the data if the rsult undifend i must to add the below code 
-server.use(express.json());
 
-function addBookHandler(a,b){
+
+
+async function addBookHandler(a,b){
 // we need data 
 // this consolr below will be empty becouse the POST data in the body not in the QSP
 console.log(a.query);
@@ -132,19 +140,29 @@ console.log(a.query);
 console.log(a.body);
 // use the destructure   the name must match the data that exisit in body 
 // the name must match name of var came from the front end model
-const{BookName,Description,Status,ownerEmail}=a.body;
-
-await modelBook.create({
+const{BookName,Description,Status,email}=a.body;
+// creat a new model save it in DB
+let theNewBook = new modelBook({
 
   BookName:BookName,
-
   Description:Description,
   Status:Status,
-  ownerEmail:ownerEmail
+  email:email
 
-})
+});
+theNewBook.save();
+b.json(theNewBook);
 
-
+// modelBook.find({email:email},(err,result)=>{
+//   if(err){
+//     console.log(err);
+//   }
+//   else{
+//   console.log(result);
+//   }
+  
+  
+//   })
 
 }
 
@@ -157,7 +175,11 @@ server.get('/test', (request, response) => {
 
 })
 
-server.delete('/deleteCat/:id',deleteBookHandler);
+
+
+
+
+
 //Func Handler for Delete 
  function deleteBookHandler(a,b){
 // delete better than  remove  becouse the delete remove multiple data
@@ -168,11 +190,11 @@ modelBook.deleteOne({_id:bookid},(err,result)=>{
 // it will return error or result
 //console.log(result);
 modelBook.find({ownerEmail:ownerEmail},(err,result)=>{
-if(){
-  
+if(err){
+  console.log(err);
 }
 else{
-
+console.log(result);
 }
 
 
