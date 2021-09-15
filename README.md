@@ -30,6 +30,7 @@ Clone this repo to your own account with the green "Use this template" button. T
 8. show collections
 9. db.collectionName.find().pretty()
 10. MongoDb exe   we need to put the url  mongodb://localhost:27017 it will show all DB
+11. shahdDB pass 12345
 
 
 
@@ -38,4 +39,4 @@ Clone this repo to your own account with the green "Use this template" button. T
 ### [Mongoose Doc](https://mongoosejs.com/).
 ### [Herokuapp](https://book-websites.herokuapp.com/).
 ### [MongoDB--for show the DS](https://www.mongodb.com/try/download/compass)
-### [MongoDB--Atlas for Deploy my DS ]()
+### [MongoDB--ATLAS for Deploy my DS ](https://cloud.mongodb.com/v2/61406b53c939a91cfd20da46#metrics/replicaSet/6141cbabbdcb7327e6329bae/explorer/Book/books/find)
