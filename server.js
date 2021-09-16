@@ -10,21 +10,26 @@ const server = express();
 server.use(cors());
 
 
-const PORT = process.env.PORT || 3001;
-
 //  To acess the data if the rsult undifend i must to add the below code 
 server.use(express.json());
+
+const PORT = process.env.PORT || 3001;
+
 
 // use MongoDS
 // getting-started.js
 const mongoose = require('mongoose');
+
+
 let modelBook;
 main().catch(err => console.log(err));
 
 async function main() {
 
   // update 1
-  await mongoose.connect( 'mongodb://localhost:27017/Book');
+  //await mongoose.connect( 'mongodb://localhost:27017/Book');
+
+await mongoose.connect(process.env.MONGOURL);
 
   const BookSchema = new mongoose.Schema({
     // name: String
@@ -90,7 +95,7 @@ server.get('/getBook',getBookHandler)
 // use POST  i must to use it in front end and the back end also
 server.post('/addBook',addBookHandler);
 server.delete('/deleteBook/:id',deleteBookHandler);
-
+server.put('/updateBook/:id',updateBookHandler);
 
 
 
@@ -142,7 +147,7 @@ console.log(a.body);
 // the name must match name of var came from the front end model
 const{BookName,Description,Status,email}=a.body;
 // creat a new model save it in DB
-let theNewBook = new modelBook({
+await  modelBook.create({
 
   BookName:BookName,
   Description:Description,
@@ -150,30 +155,30 @@ let theNewBook = new modelBook({
   email:email
 
 });
-theNewBook.save();
-b.json(theNewBook);
+// theNewBook.save();
+// b.json(theNewBook);
 
-// modelBook.find({email:email},(err,result)=>{
-//   if(err){
-//     console.log(err);
-//   }
-//   else{
-//   console.log(result);
-//   }
+modelBook.find({email:email},(err,result)=>{
+  if(err){
+    console.log(err);
+  }
+  else{
+  console.log(result);
+  }
   
   
-//   })
+  })
 
 }
 
 // for open  mogon shell
 
 
-server.get('/test', (request, response) => {
+// server.get('/test', (request, response) => {
 
-  response.send('test request received')
+//   response.send('test request received')
 
-})
+// })
 
 
 
@@ -184,12 +189,12 @@ server.get('/test', (request, response) => {
  function deleteBookHandler(a,b){
 // delete better than  remove  becouse the delete remove multiple data
 
-const bookid=a.params.id;
+const bookId=a.params.id;
 const email=a.query.email;
-modelBook.deleteOne({_id:bookid},(err,result)=>{
+modelBook.deleteOne({_id:bookId},(err,result)=>{
 // it will return error or result
 //console.log(result);
-modelBook.find({ownerEmail:ownerEmail},(err,result)=>{
+modelBook.find({email:email},(err,result)=>{
 if(err){
   console.log(err);
 }
@@ -206,6 +211,34 @@ console.log(result);
 
 
  }
+
+
+
+
+
+
+ function updateBookHandler(req,res) {
+  const id = req.params.id;
+  const {BookName,Description,email,Status} = req.body;
+  
+  modelBook.findByIdAndUpdate(id,{BookName,Status,Description},(err,result)=>{
+      modelBook.find({ownerEmail:email},(err,result)=>{
+          if(err)
+          {
+              console.log(err);
+          }
+          else
+          {
+              res.send(result);
+          }
+      })
+  })
+}
+
+
+
+
+
 
 
 
