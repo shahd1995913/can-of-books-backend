@@ -27,3 +27,4 @@ Clone this repo to your own account with the green "Use this template" button. T
 ### [Bootstrap](https://react-bootstrap.github.io/components/carousel/).
 ### [Mongoose Doc](https://mongoosejs.com/).
 ### [Herokuapp](https://book-websites.herokuapp.com/).
+### kill $(lsof -t -i:3000)
