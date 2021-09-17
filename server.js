@@ -4,8 +4,6 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
-
-
 const server = express();
 server.use(cors());
 
@@ -27,7 +25,7 @@ main().catch(err => console.log(err));
 async function main() {
 
   // update 1
-  //await mongoose.connect( 'mongodb://localhost:27017/Book');
+  //await mongoose.connect( 'mongodb://localhost:3010/Book');
 
 await mongoose.connect(process.env.MONGOURL);
 
@@ -234,12 +232,6 @@ console.log(result);
       })
   })
 }
-
-
-
-
-
-
 
 
 server.listen(PORT, () => console.log(`listening on ${PORT}`));
